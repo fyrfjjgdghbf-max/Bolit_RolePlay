@@ -875,31 +875,34 @@ INSTRUCTION: Output ONLY the raw content for this field. Do not include explanat
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-0 md:p-4 transition-all duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-      <div className={`bg-[#050505] border-x md:border border-zinc-800 w-full max-w-2xl h-full md:h-[700px] md:max-h-[90vh] flex flex-col shadow-[0_0_50px_rgba(234,88,12,0.1)] relative transition-transform duration-300 ${isOpen ? 'scale-100' : 'scale-95'}`}>
-        
-        <button type="button" onClick={handleClose} className="absolute top-4 right-4 text-zinc-600 hover:text-white transition-colors z-10">
-            <X size={20} />
-        </button>
+      <div className={`bg-[#050505] border-x md:border border-zinc-800 w-full max-w-2xl h-full md:h-[80vh] md:max-h-[700px] flex flex-col shadow-[0_0_50px_rgba(234,88,12,0.1)] relative transition-transform duration-300 ${isOpen ? 'scale-100' : 'scale-95'}`}>
 
-        {/* Header */}
-        <div className="p-8 pb-4 bg-[#080808] shrink-0">
-            <h3 className="text-xs font-serif text-orange-500 tracking-[0.3em] mb-2 uppercase drop-shadow-[0_0_5px_rgba(234,88,12,0.5)]">Manifestation</h3>
-            <h2 className="text-2xl font-serif font-bold text-white tracking-wide">
-                {character ? 'EDIT ENTITY' : 'CONJURE NEW ENTITY'}
-            </h2>
+        {/* Header - with sticky close button */}
+        <div className="p-4 sm:p-6 md:p-8 pb-3 md:pb-4 bg-[#080808] shrink-0 border-b border-zinc-900/50 relative sticky top-0 z-20">
+            <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                    <h3 className="text-[10px] sm:text-xs font-serif text-orange-500 tracking-[0.2em] sm:tracking-[0.3em] mb-1 sm:mb-2 uppercase drop-shadow-[0_0_5px_rgba(234,88,12,0.5)]">Manifestation</h3>
+                    <h2 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide truncate">
+                        {character ? 'EDIT ENTITY' : 'CONJURE NEW ENTITY'}
+                    </h2>
+                </div>
+                <button type="button" onClick={handleClose} className="text-zinc-600 hover:text-white transition-colors shrink-0 p-1">
+                    <X size={20} />
+                </button>
+            </div>
         </div>
 
         {/* Tabs - Hide tabs when editing lorebook deeply */}
         {!editingLorebook && (
             <div className="flex border-b border-zinc-900 bg-[#080808] overflow-x-auto scrollbar-none shrink-0">
                 {tabs.map(tab => (
-                    <button 
+                    <button
                         key={tab.id}
                         type="button"
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-xs font-bold tracking-widest uppercase transition-colors relative whitespace-nowrap min-w-[100px] ${activeTab === tab.id ? 'text-orange-500 bg-zinc-900/30' : 'text-zinc-600 hover:text-zinc-400'}`}
+                        className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 sm:py-4 px-2 sm:px-4 text-[10px] sm:text-xs font-bold tracking-wider sm:tracking-widest uppercase transition-colors relative whitespace-nowrap min-w-[80px] sm:min-w-[100px] ${activeTab === tab.id ? 'text-orange-500 bg-zinc-900/30' : 'text-zinc-600 hover:text-zinc-400'}`}
                     >
-                        <tab.icon size={14} /> {tab.label}
+                        <tab.icon size={12} className="sm:w-[14px] sm:h-[14px]" /> <span className="hidden sm:inline">{tab.label}</span><span className="sm:hidden">{tab.label.length > 8 ? tab.label.substring(0, 7) + '.' : tab.label}</span>
                         {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]" />}
                     </button>
                 ))}
@@ -907,7 +910,7 @@ INSTRUCTION: Output ONLY the raw content for this field. Do not include explanat
         )}
         
         {/* Content */}
-        <form id="charForm" onSubmit={handleSubmit} className="flex-1 flex flex-col p-4 md:p-8 overflow-y-auto bg-[#050505] relative scrollbar-thin scrollbar-thumb-zinc-800">
+        <form id="charForm" onSubmit={handleSubmit} className="flex-1 flex flex-col p-3 sm:p-4 md:p-6 lg:p-8 overflow-y-auto bg-[#050505] relative scrollbar-thin scrollbar-thumb-zinc-800">
             
             {activeTab === 'generator' && !editingLorebook && (
                 <div className="space-y-6 animate-slide-up-fade h-full flex flex-col">

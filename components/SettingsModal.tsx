@@ -336,19 +336,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-0 md:p-4 transition-all duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-      <div className={`bg-[#050505] border-x md:border border-zinc-800 w-full max-w-4xl h-full md:h-[800px] md:max-h-[90vh] flex flex-col shadow-[0_0_50px_rgba(234,88,12,0.1)] relative transition-transform duration-300 ${isOpen ? 'scale-100' : 'scale-95'}`}>
-        
-        <div className="p-6 pb-4 bg-[#080808] shrink-0 border-b border-zinc-900 flex justify-between items-start">
-            <div>
-                <h3 className="text-xs font-serif text-orange-500 tracking-[0.3em] mb-2 uppercase drop-shadow-[0_0_5px_rgba(234,88,12,0.5)]">Control Panel</h3>
-                <h2 className="text-2xl font-serif font-bold text-white tracking-wide">CONFIGURATION</h2>
+      <div className={`bg-[#050505] border-x md:border border-zinc-800 w-full max-w-4xl h-full md:h-[85vh] md:max-h-[800px] flex flex-col shadow-[0_0_50px_rgba(234,88,12,0.1)] relative transition-transform duration-300 ${isOpen ? 'scale-100' : 'scale-95'}`}>
+
+        <div className="p-4 sm:p-6 pb-3 sm:pb-4 bg-[#080808] shrink-0 border-b border-zinc-900 flex justify-between items-start gap-4 sticky top-0 z-20">
+            <div className="min-w-0 flex-1">
+                <h3 className="text-[10px] sm:text-xs font-serif text-orange-500 tracking-[0.2em] sm:tracking-[0.3em] mb-1 sm:mb-2 uppercase drop-shadow-[0_0_5px_rgba(234,88,12,0.5)]">Control Panel</h3>
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide truncate">CONFIGURATION</h2>
             </div>
-            <div className="flex gap-2">
-                 <Button variant="ghost" className="text-red-500 hover:text-red-400" onClick={handleResetClick} title="Reset Defaults">
-                    <RefreshCcw size={16} />
+            <div className="flex gap-1 sm:gap-2 shrink-0">
+                 <Button variant="ghost" className="text-red-500 hover:text-red-400 p-2" onClick={handleResetClick} title="Reset Defaults">
+                    <RefreshCcw size={14} className="sm:w-4 sm:h-4" />
                  </Button>
                  <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors p-2">
-                    <X size={24} />
+                    <X size={20} className="sm:w-6 sm:h-6" />
                  </button>
             </div>
         </div>
@@ -356,14 +356,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
         {!editingLorebook && (
             <div className="flex border-b border-zinc-900 bg-[#080808] overflow-x-auto scrollbar-none shrink-0">
                 {tabs.map(tab => (
-                    <button 
+                    <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 text-xs font-bold tracking-widest uppercase transition-colors relative whitespace-nowrap min-w-[120px] ${activeTab === tab.id ? 'text-orange-500 bg-zinc-900/30' : 'text-zinc-600 hover:text-zinc-400'}`}
+                        className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 sm:py-4 px-3 sm:px-6 text-[10px] sm:text-xs font-bold tracking-wider sm:tracking-widest uppercase transition-colors relative whitespace-nowrap min-w-[90px] sm:min-w-[120px] ${activeTab === tab.id ? 'text-orange-500 bg-zinc-900/30' : 'text-zinc-600 hover:text-zinc-400'}`}
                     >
-                        {tab.id === 'general' && <Cpu size={14} />}
-                        {tab.id === 'generation' && <Sparkles size={14} />}
-                        {tab.id === 'world' && <Globe size={14} />}
+                        {tab.id === 'general' && <Cpu size={12} className="sm:w-[14px] sm:h-[14px]" />}
+                        {tab.id === 'generation' && <Sparkles size={12} className="sm:w-[14px] sm:h-[14px]" />}
+                        {tab.id === 'world' && <Globe size={12} className="sm:w-[14px] sm:h-[14px]" />}
                         {tab.label}
                         {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]" />}
                     </button>
@@ -371,7 +371,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
             </div>
         )}
         
-        <div className="flex-1 overflow-y-auto bg-[#050505] p-6 md:p-8 scrollbar-thin scrollbar-thumb-zinc-800">
+        <div className="flex-1 overflow-y-auto bg-[#050505] p-3 sm:p-4 md:p-6 lg:p-8 scrollbar-thin scrollbar-thumb-zinc-800">
             {activeTab === 'general' && !editingLorebook && (
                 <div className="space-y-8 animate-slide-up-fade max-w-2xl mx-auto">
                     <section>
@@ -991,9 +991,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
 
         {/* Footer Actions */}
         {!editingLorebook && (
-            <div className="p-6 border-t border-zinc-900 flex justify-end gap-4 bg-[#080808] shrink-0 z-10">
-                <Button variant="ghost" onClick={handleCancel}>Cancel</Button>
-                <Button variant="primary" onClick={handleSave}>Save Changes</Button>
+            <div className="p-3 sm:p-4 md:p-6 border-t border-zinc-900 flex justify-end gap-2 sm:gap-4 bg-[#080808] shrink-0 z-10">
+                <Button variant="ghost" onClick={handleCancel} className="text-xs sm:text-sm py-2 sm:py-3">Cancel</Button>
+                <Button variant="primary" onClick={handleSave} className="text-xs sm:text-sm py-2 sm:py-3">Save Changes</Button>
             </div>
         )}
 

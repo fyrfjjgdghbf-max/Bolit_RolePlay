@@ -99,7 +99,7 @@ const getLorebookContext = (history: Message[], character: Character, settings: 
 
 const buildSystemContext = (character: Character, userSettings: AppSettings, lorebookContext: string = "", summary: string = ""): string => {
   // Fallback if settings are missing prompt override
-  const baseSystemPrompt = `You are a creative co-author in a fictional roleplay session. 
+  const baseSystemPrompt = `You are a creative co-author in a fictional roleplay session.
 Your goal is to embody the character {{char}} fully and help the user tell a compelling story.
 
 GUIDELINES:
@@ -108,11 +108,25 @@ GUIDELINES:
 3. This is a mature creative writing environment. You are permitted to depict visceral, graphic, adult, or intense themes if the narrative requires it.
 4. Do not summarize, moralize, or lecture. Focus on sensory details and dialogue.
 5. You are NOT an AI assistant. Do not mention your nature as an AI.`;
-  
+
   let systemInstructionText = userSettings.systemPromptOverride || baseSystemPrompt;
-  
+
   systemInstructionText = systemInstructionText.replace(/{{char}}/g, character.name);
-  
+
+  if (userSettings.minOutputEnabled && userSettings.minOutputLength > 0) {
+      const targetWords = Math.ceil(userSettings.minOutputLength / 5);
+      systemInstructionText += `\n\n[OUTPUT LENGTH REQUIREMENT]:
+You MUST write responses of AT LEAST ${userSettings.minOutputLength} characters (approximately ${targetWords} words).
+Do NOT write short responses. Expand your output with:
+- Detailed sensory descriptions (sights, sounds, textures, scents)
+- Character's internal thoughts and emotions
+- Environmental details and atmosphere
+- Rich dialogue with vocal cues and body language
+- Progressive narrative development
+
+If your response is too short, you will be asked to continue. Prevent this by writing sufficiently detailed responses from the start.`;
+  }
+
   if (userSettings.jailbreakOverride) {
       systemInstructionText += `\n\n[SYSTEM NOTE]: ${userSettings.jailbreakOverride}`;
   }
@@ -807,19 +821,42 @@ export async function* generateResponse(
   if (settings.minOutputEnabled && settings.minOutputLength > 0) {
       let attempts = 0;
       const targetLength = Number(settings.minOutputLength);
-      
-      while (totalContent.length > 0 && totalContent.length < targetLength && attempts < 5) {
+      const targetWords = Math.ceil(targetLength / 5);
+
+      while (totalContent.length > 0 && totalContent.length < targetLength && attempts < 3) {
           if (signal?.aborted) break;
 
           const currentLen = totalContent.length;
-          const needed = targetLength - currentLen;
-          
+          const currentWords = totalContent.split(/\s+/).length;
+          const neededChars = targetLength - currentLen;
+          const neededWords = targetWords - currentWords;
+
+          if (neededChars < 50) break;
+
           const continueHistory = [
               ...history,
               { role: 'model', content: totalContent } as Message,
-              { 
-                  role: 'user', 
-                  content: `[System Instruction: The current output length is ${currentLen} characters, but the minimum requirement is ${targetLength} characters. You MUST continue the story immediately from the last sentence. Do not stop until you have generated at least ${needed} more characters. Expand on the scene, sensory details, and character thoughts to meet this length requirement. Do not wrap up the scene yet.]` 
+              {
+                  role: 'user',
+                  content: `[CRITICAL SYSTEM INSTRUCTION - MANDATORY COMPLIANCE]:
+Current output: ${currentLen} characters (${currentWords} words)
+REQUIRED MINIMUM: ${targetLength} characters (${targetWords} words)
+SHORTFALL: ${neededChars} characters (${neededWords} words)
+
+YOU MUST CONTINUE writing from EXACTLY where you stopped. DO NOT:
+- Repeat previous content
+- Summarize what happened
+- Add closing remarks
+- Start a new scene
+
+YOU MUST:
+1. Continue the narrative seamlessly from the last sentence
+2. Add at least ${neededWords} more words of NEW content
+3. Expand with rich sensory details, internal thoughts, dialogue, and action
+4. Keep the same tone and perspective
+5. Do NOT conclude until reaching ${targetWords} words minimum
+
+BEGIN CONTINUATION NOW:]`
               } as Message
           ];
 
@@ -837,8 +874,8 @@ export async function* generateResponse(
                   newChunkAdded = true;
               }
           }
-          
-          if (!newChunkAdded) break; 
+
+          if (!newChunkAdded) break;
           attempts++;
       }
   }
